@@ -1,5 +1,7 @@
-GET http://localhost:5001/api/v1/users
+@baseUrl = http://localhost:{{$dotenv PORT}}/api/v1
+
+GET {{baseUrl}}/user
 
 ###
 
-GET http://localhost:5001/api/v1/users/123
+GET {{baseUrl}}/user/1
