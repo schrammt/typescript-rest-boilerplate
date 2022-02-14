@@ -5,19 +5,30 @@ import express, { Request, Response, Express } from "express";
 import { userRouter } from "./routes";
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
-import { ConnectionOptions, createConnection } from "typeorm";
-import { User } from "./entity";
-import { Database } from "./db/db";
+import { logger } from "express-winston";
+import winston from "winston";
 
 dotenv.config();
 
 const app: Express = express();
+app.use(express.json()) // for parsing application/json
+app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+app.use(logger({
+  transports: [new winston.transports.Console()],
+  format: winston.format.combine(
+    winston.format.colorize(),
+    winston.format.cli()
+  ),
+  meta: true,
+  msg: "HTTP {{req.method}} {{req.url}}", // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
+      expressFormat: true,
+}));
 const PORT: String | Number = process.env.PORT || 5000;
 const swaggerJsdocOptions = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "Hello World",
+      title: "Typescript-Rest-Boilerplate",
       version: "1.0.0",
     },
     host: `localhost:${PORT}`, // Host (optional)
@@ -34,19 +45,16 @@ const swaggerJsdocOptions = {
 };
 
 const swaggerDocument = swaggerJsdoc(swaggerJsdocOptions);
-console.log(swaggerDocument);
-
-
 
 (async () => {
   try {
     console.log("RUN");
 
-    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
     app.get("/", (req: Request, res: Response) => {
       res.json({ message: `Welcome to the home page!` });
     });
+
+    app.use("/api/v1/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
     app.use("/api/v1/user", userRouter);
 

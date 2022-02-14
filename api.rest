@@ -1,7 +1,31 @@
 @baseUrl = http://localhost:{{$dotenv PORT}}/api/v1
 
-GET {{baseUrl}}/user
+GET {{baseUrl}}/user HTTP/1.1
 
 ###
 
-GET {{baseUrl}}/user/1
+GET {{baseUrl}}/user/1 HTTP/1.1
+
+###
+
+PUT {{baseUrl}}/user/1 HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Dariana Walter",
+    "email": "Dariana.Walter79@yahoo.com"
+}
+
+###
+
+POST {{baseUrl}}/user/ HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Ford Prefect",
+    "email": "ford.prefect@gmail.com"
+}
+
+###
+
+DELETE {{baseUrl}}/user/101 HTTP/1.1
