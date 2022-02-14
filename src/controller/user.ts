@@ -4,6 +4,7 @@ import { User as UserEntity } from "../entity";
 import faker from "@faker-js/faker";
 import { Repository } from "typeorm";
 import { Database } from "../db/db";
+import { validate } from "class-validator";
 
 
 export interface UserRequest<T> extends Request {
@@ -58,8 +59,6 @@ export class User extends BaseController {
     /**
      * Create a user
      * 
-     * TODO: implement validation
-     * 
      * @param req Request
      * @param res Response
      * 
@@ -67,19 +66,22 @@ export class User extends BaseController {
      */
     public async createUser(req: UserRequest<UserEntity>, res: Response): Promise<void> {
         let repository = await this.getRepository();
-        let user = new UserEntity();
 
         if (!req.body) {
             this.sendBadRequest(res);
             return;
         }
 
-        if (req.body.email) {
-            user.email = req.body.email;
-        }
+        let reqUser: UserEntity = req.body;
+        let user = new UserEntity();
+        user.email = reqUser.email;
+        user.name = reqUser.name;        
 
-        if (req.body.name) {
-            user.name = req.body.name;
+        const errors = await validate(user);
+
+        if (errors.length > 0) {
+            this.sendBadRequest(res, JSON.stringify(errors));
+            return;
         }
 
         await repository.save(user);
@@ -88,8 +90,6 @@ export class User extends BaseController {
 
     /**
      * Update a user
-     * 
-     * TODO: implement validation
      * 
      * @param req Request
      * @param res Response
@@ -105,12 +105,15 @@ export class User extends BaseController {
             return;
         }
 
-        if (req.body.email) {
-            user.email = req.body.email;
-        }
+        let reqUser: UserEntity = req.body;
+        user.email = reqUser.email ?? user.email;
+        user.name = reqUser.name ?? user.name;
 
-        if (req.body.name) {
-            user.name = req.body.name;
+        const errors = await validate(user);
+
+        if (errors.length > 0) {
+            this.sendBadRequest(res, JSON.stringify(errors));
+            return;
         }
         
         await repository.save(user);

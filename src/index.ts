@@ -7,6 +7,7 @@ import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import { logger } from "express-winston";
 import winston from "winston";
+import cors from "cors";
 
 dotenv.config();
 
@@ -23,6 +24,8 @@ app.use(logger({
   msg: "HTTP {{req.method}} {{req.url}}", // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
       expressFormat: true,
 }));
+app.use(cors());
+
 const PORT: String | Number = process.env.PORT || 5000;
 const swaggerJsdocOptions = {
   definition: {

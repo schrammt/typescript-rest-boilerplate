@@ -1,3 +1,4 @@
+import { IsEmail, IsNotEmpty, IsString, MinLength } from "class-validator";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 /**
@@ -26,8 +27,13 @@ export class User {
     id?: string;
 
     @Column()
+    @IsString()
+    @IsNotEmpty()
+    @MinLength(3)
     name?: string;
 
     @Column()
+    @IsEmail()
+    @IsNotEmpty()
     email?: string;
 }

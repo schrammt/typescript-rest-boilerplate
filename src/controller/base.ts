@@ -6,7 +6,10 @@ export abstract class Base {
         res.status(404).end();
     }
 
-    protected sendBadRequest(res: Response): void {
+    protected sendBadRequest(res: Response, errorMessage?: string): void {
+        if (errorMessage) {
+            res.set("X-ERROR-MESSAGE", errorMessage);
+        }
         res.status(400).end();
     }
 }

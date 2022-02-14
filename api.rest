@@ -18,12 +18,34 @@ content-type: application/json
 
 ###
 
+# Update only one field
+PUT {{baseUrl}}/user/1 HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Dariana Walter"
+}
+
+###
+
 POST {{baseUrl}}/user/ HTTP/1.1
 content-type: application/json
 
 {
     "name": "Ford Prefect",
     "email": "ford.prefect@gmail.com"
+}
+
+###
+
+# Should throw errors
+# Field name is required
+# Field email is not an email
+POST {{baseUrl}}/user/ HTTP/1.1
+content-type: application/json
+
+{
+    "email": "ford.prefect"
 }
 
 ###
